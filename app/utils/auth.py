@@ -9,7 +9,6 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
 ) -> str:
     token = credentials.credentials
-    print("auth  : ", token)
 
     if not token:
         raise HTTPException(
