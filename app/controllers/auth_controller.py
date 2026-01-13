@@ -7,3 +7,6 @@ def mock_login(payload: LoginRequest):
     token = f"token_{payload.userId}_{int(time.time())}"
     token_store[token] = payload.userId
     return {"token": token}
+
+    # def list_logins():
+    return token_store

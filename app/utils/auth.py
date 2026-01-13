@@ -1,27 +1,31 @@
-from fastapi import Header, HTTPException
+from fastapi import HTTPException, Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.store.memory import token_store
 
+bearer_scheme = HTTPBearer()
 
-def get_current_user(authorization: str = Header(None)) -> str:
-    if not authorization:
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+) -> str:
+    token = credentials.credentials
+    print("auth  : ", token)
+
+    if not token:
         raise HTTPException(
-            status_code=401,
-            detail={"error": "Authorization header missing"}
+            status_code=401, detail={"error": "Authorization header missing"}
         )
 
-    if not authorization.startswith("Bearer "):
+    if not token.startswith("token"):
         raise HTTPException(
-            status_code=401,
-            detail={"error": "Invalid authorization format"}
+            status_code=401, detail={"error": "Invalid authorization format"}
         )
 
-    token = authorization.replace("Bearer ", "").strip()
     user_id = token_store.get(token)
 
     if not user_id:
         raise HTTPException(
-            status_code=401,
-            detail={"error": "Invalid or expired token"}
+            status_code=401, detail={"error": "Invalid or expired token"}
         )
 
     return user_id

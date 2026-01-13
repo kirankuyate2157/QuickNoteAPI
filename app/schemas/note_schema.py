@@ -5,7 +5,7 @@ from typing import Optional
 class NoteCreateSchema(BaseModel):
     title: str = Field(
         ...,
-        min_length=1,
+        # min_length=1,
         max_length=80,
         description="Note title"
     )
